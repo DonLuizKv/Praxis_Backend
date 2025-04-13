@@ -1,17 +1,32 @@
 import express from "express";
-import { pool } from "./database.js";
 import cors from "cors";
+import morgan from "morgan";
+import dotenv from "dotenv"
 
+// routes
+import adminRoutes from "./routes/admin.routes.js";
+
+// el servidor
 const app = express();
+dotenv.config();
 
+// variables de entorno
+const PORT = process.env.PORT;
+
+// middelwares
 app.use(cors());
+app.use(morgan("dev"));
+app.use(express.json());
+
+// las ruticas
+app.use("/api/admin", adminRoutes);
 
 app.get("/", (req, res) => {
-    res.send("Hello World");
-});
+    res.status(200).send("Welcome to Praxis")
+})
 
-app.listen(4000, () => {
-    console.log("Server is running on port 4000");
-});
-
+// escuchamos el puerto 
+app.listen(PORT, () => {
+    console.log(`Server running in ${PORT}`);
+})
 

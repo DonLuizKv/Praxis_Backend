@@ -5,6 +5,7 @@ import dotenv from "dotenv"
 
 // routes
 import adminRoutes from "./routes/admin.routes.js";
+import studentRoutes from "./routes/student.routes.js"
 
 // el servidor
 const app = express();
@@ -19,7 +20,8 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 // las ruticas
-app.use("/api/admin", adminRoutes);
+app.use("/admin", adminRoutes);
+app.use("/student", studentRoutes)
 
 app.get("/", (req, res) => {
     res.status(200).send("Welcome to Praxis")
@@ -29,4 +31,3 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running in ${PORT}`);
 })
-

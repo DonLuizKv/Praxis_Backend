@@ -20,12 +20,6 @@ async function createAdmin(name, email, password) {
     return a;
 }
 
-async function createStudent(name, email, password) {
-    const query = "";
-    const [result] = await DB.execute(query, [name, email, password]);
-    return result;
-}
-
 async function uploadArchive(archive, pointer) {
     const querys = {
         "arl": "INSERT INTO archive VALUES(?)",

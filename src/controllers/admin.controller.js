@@ -1,43 +1,48 @@
-import Model from "../models/admin.model.js";
+import { createAdmin, getAdmins, getAdminById, updateAdmin, deleteAdmin } from "../services/admin.service.js";
 
-//? Metodos que reciben y envian la informacion (mesero).
-//* 200 - peticion correcta
-//* 204 - peticion correcta pero no te envio nada
-//todo 404 - url no encontrada
-//! 500 - error en el servidor
-
-async function create_Admin(req, res) {
+export const CreateAdmin = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
-        await Model.createAdmin(name, email, password);
-        return res.status(201).json({
-            message: 'Admin creado con éxito',
-        });
-    } catch (e) {
-        console.error('Error al crear admin:', e);
-        return res.status(500).json({
-            message: 'Error al crear admin',
-            error: e,
-        });
+        await createAdmin(req.body);
+        return res.status(201).json({ message: 'Admin creado con éxito'});
+    } catch (error) {
+        console.error('Error al crear admin:', error);
+        return res.status(500).json({ error: error.message });
     }
-}
+};
 
-async function listAdmins(req, res) {
+export const GetAdmins = async (req, res) => {
     try {
-        const consult = await getAllAdmins();
-        return res.status(200).json({
-            message: 'Admin creado con éxito',
-            data:consult,
-        });
-    } catch (e) {
-        return res.status(500).json({
-            message: 'Error al crear admin',
-            error: e,
-        });
+        const consult = await getAdmins();
+        return res.status(200).json({ admins: consult });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
     }
-}
+};
 
-export default {
-    create_Admin,
-    listAdmins,
-}
+export const GetAdminById = async (req, res) => {
+    try {
+        const consult = await getAdminById(req.params.id);
+        return res.status(200).json({ admin: consult });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+export const UpdateAdmin = async (req, res) => {
+    try {
+        await updateAdmin(req.params.id, req.body);
+        return res.status(200).json({ message: 'Admin actualizado con éxito'});
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};  
+
+export const DeleteAdmin = async (req, res) => {
+    try {
+        await deleteAdmin(req.params.id);
+        return res.status(200).json({ message: 'Admin eliminado con éxito'});
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+

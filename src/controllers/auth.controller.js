@@ -1,18 +1,8 @@
-import { login, verifySession, createTestSession } from '../services/auth.service.js';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { login, verifySession, createTestSession, register } from '../services/auth.service.js';
 
 export const Login = async (req, res) => {
     try {
-        const { role, ...credentials } = req.body;
-        
-        if (!role || !['admin', 'student'].includes(role)) {
-            return res.status(400).json({ error: 'Tipo de usuario no válido' });
-        }
-        
-        const result = await login(credentials, role);
+        const result = await login(req.body);
         return res.status(200).json(result);
     } catch (error) {
         console.error('Error al iniciar sesión:', error);
@@ -20,10 +10,20 @@ export const Login = async (req, res) => {
     }
 };
 
+export const Register = async (req, res) => {
+    try {
+        const result = await register(req.body);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.error('Error al registrar usuario:', error);
+        return res.status(400).json({ error: error.message });
+    }
+};
+
 export const VerifySession = async (req, res) => {
     try {
         const token = req.headers['x-access-token'] || req.headers['authorization'];
-        
+
         if (!token) {
             return res.status(403).json({ error: 'Se requiere un token para la autenticación' });
         }

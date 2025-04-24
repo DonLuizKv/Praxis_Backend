@@ -14,13 +14,13 @@ export const login = async (credentials) => {
         if (!credentials.email || !credentials.password) {
             throw new Error('Email y contraseña son requeridos');
         }
-        
+
         const { email, password } = credentials;
 
         const [admins] = await pool.query(
             "SELECT * FROM admins WHERE email = ?",
             [email]
-        );  
+        );
 
         const [students] = await pool.query(
             "SELECT * FROM students WHERE email = ?",
@@ -28,23 +28,30 @@ export const login = async (credentials) => {
         );
 
         const [user] = admins.length > 0 ? admins : students;
-        
+
         if (!user) {
             throw new Error('Credenciales inválidas');
         }
-        
+
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
             throw new Error('Credenciales inválidas');
         }
-        
+
         const token = jwt.sign(
-            { id: user.id, email: user.email, role: user.role, name: user.name },
+            {
+                id: user.id,
+                email: user.email,
+                role: user.role,
+                name: user.name
+            },
             process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES_IN }
+            {
+                expiresIn: process.env.JWT_EXPIRES_IN
+            }
         );
-        
+
         return {
             token,
             user: {
@@ -65,14 +72,14 @@ export const register = async (credentials) => {
             throw new Error('Credenciales son requeridas');
         }
 
-        const { name, documentID, email, password, role } = credentials;
+        const { name, document_id, email, password, role } = credentials;
 
         if (role === 'admin') {
             if (!name || !email || !password) {
                 throw new Error('Todos los campos son requeridos');
             }
         } else if (role === 'student') {
-            if (!name || !documentID || !email || !password) {
+            if (!name || !document_id || !email || !password) {
                 throw new Error('Todos los campos son requeridos');
             }
         }
@@ -86,7 +93,7 @@ export const register = async (credentials) => {
                 "SELECT * FROM admins WHERE email = ?",
                 [email]
             );
-            
+
             if (existingAdmin.length > 0) {
                 throw new Error('El correo electrónico ya está en uso');
             }
@@ -102,8 +109,8 @@ export const register = async (credentials) => {
 
 
             const [existingStudentDocumentID] = await pool.query(
-                "SELECT * FROM students WHERE documentID = ?",
-                [documentID]
+                "SELECT * FROM students WHERE document_id = ?",
+                [document_id]
             );
 
             if (existingStudentDocumentID.length > 0) {
@@ -120,8 +127,8 @@ export const register = async (credentials) => {
             );
         } else if (role === 'student') {
             await pool.query(
-                "INSERT INTO students (name, documentID, email, password, role) VALUES (?, ?, ?, ?, ?)",
-                [name, documentID, email, hashedPassword, role]
+                "INSERT INTO students (name, document_id, email, password, role) VALUES (?, ?, ?, ?, ?)",
+                [name, document_id, email, hashedPassword, role]
             );
         }
 
@@ -161,7 +168,7 @@ export const verifySession = async (token) => {
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        
+
         if (!decoded.role || !['admin', 'student'].includes(decoded.role)) {
             throw new Error('Token inválido: rol no válido');
         }
@@ -171,7 +178,7 @@ export const verifySession = async (token) => {
                 "SELECT * FROM admins WHERE id = ?",
                 [decoded.id]
             );
-            
+
             if (admins.length === 0) {
                 throw new Error('Usuario no encontrado');
             }
@@ -185,7 +192,7 @@ export const verifySession = async (token) => {
                 throw new Error('Usuario no encontrado');
             }
         }
-        
+
         return { role: decoded.role };
     } catch (error) {
         if (error.name === 'JsonWebTokenError') {

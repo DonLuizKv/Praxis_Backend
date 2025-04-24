@@ -52,7 +52,7 @@ export class SocketManager {
                         };
 
                         SocketManager.connectedUsers.set(socket.id, userInfo);
-                        
+
                         if (decoded.role === "admin") {
                             SocketManager.connectedAdmins.set(socket.id, userInfo);
                         } else if (decoded.role === "student") {
@@ -93,14 +93,23 @@ export class SocketManager {
                     }
                 });
 
-                socket.on("test", (data) => {
-                    console.log("Test recibido:", data);
-                    SocketManager.connectedUsers.forEach((user) => {
-                        if (user.socket.id !== socket.id) {
-                            user.socket.emit("test", data);
+                socket.on("new_notification", (data) => {
+                    SocketManager.connectedStudents.forEach((user) => {
+                        if (user.userId === data.id) {
+                            console.log("se encontro el usuario", user.userId);
+                            user.socket.emit("new_notification", data);
                         }
-                    })
-                })
+                    });
+                    console.log(data);
+                });
+
+                socket.on("mouse_move", (data) => {
+                    SocketManager.connectedUsers.forEach((user) => {
+                        if (socket.id !== user.socket.id) {
+                            user.socket.emit("mouse_move", data);
+                        }
+                    });
+                });
 
                 socket.on("disconnect", () => {
                     console.log("Socket desconectado:", socket.id);

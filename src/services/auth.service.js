@@ -72,7 +72,7 @@ export const register = async (credentials) => {
             throw new Error('Credenciales son requeridas');
         }
 
-        const { name, document_id, email, password, role } = credentials;
+        const { name, document_id, email, password, scenary, state, role } = credentials;
 
         if (role === 'admin') {
             if (!name || !email || !password) {
@@ -126,9 +126,8 @@ export const register = async (credentials) => {
                 [name, email, hashedPassword, role]
             );
         } else if (role === 'student') {
-            await pool.query(
-                "INSERT INTO students (name, document_id, email, password, role) VALUES (?, ?, ?, ?, ?)",
-                [name, document_id, email, hashedPassword, role]
+            await pool.query(                "INSERT INTO students (name, document_id, email, password, role, scenary, state) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                [name, document_id, email, hashedPassword, role, scenary, state]
             );
         }
 

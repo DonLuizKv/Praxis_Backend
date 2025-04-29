@@ -2,6 +2,8 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 import pool from '../utilities/database.js';
+import { normalizeStudent } from '../utilities/utils.js';
+import { StudentModel } from '../models/student.model.js';
 
 dotenv.config();
 
@@ -137,15 +139,19 @@ export const register = async (credentials) => {
             user_id = result.insertId;
         }
 
-        const payload = {
-            binnacles: [],
-            
+        const student = await StudentModel.getStudentById(user_id);
+
+        if (student.length === 0) {
+            throw new Error('Usuario no encontrado');
         }
 
-        return {
-            ...credentials,
-            id: user_id
-        };
+        const normalizedStudent = await normalizeStudent(student[0]);
+
+        if (!normalizedStudent) {
+            throw new Error('Error al normalizar el estudiante');
+        }
+        
+        return normalizedStudent;
     } catch (error) {
         throw new Error(error.message);
     }

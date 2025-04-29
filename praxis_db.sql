@@ -21,6 +21,21 @@ SET time_zone = "+00:00";
 -- Base de datos: `praxis_db`
 --
 
+USE praxis_db;
+
+-- Primero eliminar las tablas que tienen claves foráneas
+DROP TABLE IF EXISTS `binnacles`;
+DROP TABLE IF EXISTS `documents`;
+DROP TABLE IF EXISTS `computer_tools`;
+DROP TABLE IF EXISTS `formations`;
+DROP TABLE IF EXISTS `languages`;
+DROP TABLE IF EXISTS `student_references`;
+DROP TABLE IF EXISTS `work_experiences`;
+DROP TABLE IF EXISTS `curriculums`;
+DROP TABLE IF EXISTS `students`;
+DROP TABLE IF EXISTS `admins`;
+DROP TABLE IF EXISTS `scenary`;
+
 -- --------------------------------------------------------
 
 --
@@ -31,7 +46,7 @@ CREATE TABLE `admins` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `role` enum('admin','student') NOT NULL,
+  `role` enum('admin','student') NOT NULL DEFAULT 'admin',
   `password` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -42,7 +57,7 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`id`, `name`, `email`, `role`, `password`, `created_at`, `updated_at`) VALUES
-(1, 'xibia', 'admin@praxisss.com', 'admin', '$2a$10$SAucIuQ.0lkS.M2XfAnHSeIFFjCVzKaO37jJ2gZMlrbsKAamCYIrW', '2025-04-23 23:14:42', '2025-04-23 23:14:42');
+(1, 'xibia', 'admin@praxis.com', 'admin', '$2a$10$SAucIuQ.0lkS.M2XfAnHSeIFFjCVzKaO37jJ2gZMlrbsKAamCYIrW', '2025-04-23 23:14:42', '2025-04-23 23:14:42');
 
 -- --------------------------------------------------------
 
@@ -147,6 +162,13 @@ CREATE TABLE `scenary` (
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `scenary`
+--
+
+INSERT INTO `scenary` (`id`, `name`, `address`, `created_at`) VALUES
+(1, 'Escenario Principal', 'Calle Principal 123', NOW());
+
 -- --------------------------------------------------------
 
 --
@@ -158,7 +180,7 @@ CREATE TABLE `students` (
   `name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('admin','student') NOT NULL,
+  `role` enum('admin','student') NOT NULL DEFAULT 'student',
   `state` tinyint(1) NOT NULL DEFAULT 1,
   `document_id` varchar(20) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -171,7 +193,7 @@ CREATE TABLE `students` (
 --
 
 INSERT INTO `students` (`id`, `name`, `email`, `password`, `role`, `state`, `document_id`, `created_at`, `updated_at`, `scenary_id`) VALUES
-(3, 'pick up', 'juasjuas@a.com', '$2a$10$Z/9cy8B1jNZJaUR2ElqPAOTcRQVHiUlNPHDgbjOni5NjKIV3VuOOO', 'student', 1, '123456789', '2025-04-27 22:23:28', '2025-04-27 22:23:28', 0);
+(3, 'pick up', 'juasjuas@a.com', '$2a$10$Z/9cy8B1jNZJaUR2ElqPAOTcRQVHiUlNPHDgbjOni5NjKIV3VuOOO', 'student', 1, '123456789', '2025-04-27 22:23:28', '2025-04-27 22:23:28', 1);
 
 -- --------------------------------------------------------
 

@@ -53,7 +53,7 @@ CREATE TABLE curriculums (
   civil_state VARCHAR(50) DEFAULT NULL,
   residence VARCHAR(150) DEFAULT NULL,
   residence_phone VARCHAR(20) DEFAULT NULL,
-  tags TEXT NOT NULL DEFAULT '[]',
+  tags JSON NOT NULL,
   photo TEXT NOT NULL,
   FOREIGN KEY (student_id) REFERENCES students (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

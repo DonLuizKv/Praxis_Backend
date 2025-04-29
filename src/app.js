@@ -7,6 +7,12 @@ import http from "http";
 import { Server } from "socket.io";
 import { SocketManager } from "./lib/SocketManager.js";
 
+dotenv.config();
+
+// Environment Variables
+const PORT = process.env.PORT;
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS.split(',');
+
 // Routes
 import adminRoutes from "./routes/admin.routes.js";
 import scenaryRoutes from "./routes/scenary.routes.js";
@@ -17,7 +23,11 @@ import authRoutes from "./routes/auth.routes.js";
 // Server
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: ALLOWED_ORIGINS
+    }
+});
 
 // Socket
 const socketManager = SocketManager.getInstance(io);
@@ -26,12 +36,6 @@ try {
 } catch (error) {
     console.log(error);
 }
-
-dotenv.config();
-
-// Environment Variables
-const PORT = process.env.PORT;
-const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS.split(',');
 
 // Rate Limit
 const limiter = rateLimit({

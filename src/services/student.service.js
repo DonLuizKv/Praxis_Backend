@@ -25,27 +25,29 @@ export const getStudents = async () => {
     try {
         const query = `
         SELECT 
-            s.id AS student_id,
-            s.name AS student_name,
-            s.document_id,
-            s.scenary,
-            s.state AS stateStudent,
+    s.id AS student_id,
+    s.name AS student_name,
+    s.document_id,
+    s.state AS stateStudent,
 
-            d_arl.state AS arl_state,
-            d_arl.file_path AS arl_file,
+    d_arl.state AS arl_state,
+    d_arl.file_path AS arl_file,
 
-            d_cover.state AS cover_letter_state,
-            d_cover.file_path AS cover_letter_file,
+    d_cover.state AS cover_letter_state,
+    d_cover.file_path AS cover_letter_file,
 
-            b.id AS binnacle_id,
-            b.name AS binnacle_name,
-            b.date AS binnacle_date,
-            b.file_path AS binnacle_file
+    b.id AS binnacle_id,
+    b.name AS binnacle_name,
+    b.date AS binnacle_date,
+    b.file_path AS binnacle_file,
 
-        FROM students s
-        LEFT JOIN documents d_arl ON d_arl.student_id = s.id AND d_arl.document_type = 'arl'
-        LEFT JOIN documents d_cover ON d_cover.student_id = s.id AND d_cover.document_type = 'coverLetter'
-        LEFT JOIN binnacles b ON b.student_id = s.id;
+    sc.name AS scenary_name
+FROM students s
+LEFT JOIN documents d_arl ON d_arl.student_id = s.id AND d_arl.document_type = 'arl'
+LEFT JOIN documents d_cover ON d_cover.student_id = s.id AND d_cover.document_type = 'coverLetter'
+LEFT JOIN binnacles b ON b.student_id = s.id
+LEFT JOIN scenary sc ON sc.id = s.scenary_id;
+
         `;
         const [result] = await pool.query(query);
 
@@ -56,8 +58,8 @@ export const getStudents = async () => {
                 id: row.student_id,
                 name: row.student_name,
                 document_id: row.document_id,
-                scenary: row.scenary,
-                stateStudent: row.stateStudent === 1 ? true : false,
+                scenary: row.scenary_name || "Sin escenario",
+                state: row.stateStudent === 1 ? true : false,
                 documents: {
                     arl: {
                         state: row.arl_state === 1 ? true : false,

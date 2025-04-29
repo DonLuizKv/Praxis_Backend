@@ -9,6 +9,7 @@ import { SocketManager } from "./lib/SocketManager.js";
 
 // Routes
 import adminRoutes from "./routes/admin.routes.js";
+import scenaryRoutes from "./routes/scenary.routes.js";
 import studentRoutes from "./routes/student.routes.js";
 import filesRoutes from "./routes/files.routes.js";
 import authRoutes from "./routes/auth.routes.js";
@@ -63,6 +64,7 @@ app.use(limiter);
 
 // Routes Use
 app.use("/admin", adminRoutes);
+app.use("/scenary", scenaryRoutes);
 app.use("/student", studentRoutes);
 app.use("/files", filesRoutes);
 app.use("/auth", authRoutes);

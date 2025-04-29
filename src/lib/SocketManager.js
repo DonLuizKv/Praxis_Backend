@@ -7,8 +7,6 @@ export class SocketManager {
     static instance;
     static io;
     static connectedUsers = new Map();
-    static connectedAdmins = new Map();
-    static connectedStudents = new Map();
 
     constructor(io) {
         this.io = io;
@@ -24,7 +22,10 @@ export class SocketManager {
     start() {
         try {
             this.io.on("connection", (socket) => {
-                console.log("Nueva conexión de socket:", socket.id);
+                console.log("\x1b[32m%s\x1b[0m", "Nueva conexión de socket:", socket.id);
+                if(!SocketManager.connectedUsers.has(socket.id)) {
+                    SocketManager.connectedUsers.set(socket.id, socket);
+                }
 
                 socket.on("client_connected", (data) => {
                     try {
@@ -48,16 +49,10 @@ export class SocketManager {
                         const userInfo = {
                             socket,
                             userId: decoded.id,
-                            role: decoded.role
+                            role: decoded.role,
+                            name: decoded.name,
+                            email: decoded.email
                         };
-
-                        SocketManager.connectedUsers.set(socket.id, userInfo);
-
-                        if (decoded.role === "admin") {
-                            SocketManager.connectedAdmins.set(socket.id, userInfo);
-                        } else if (decoded.role === "student") {
-                            SocketManager.connectedStudents.set(socket.id, userInfo);
-                        }
 
                         const payload = {
                             role: decoded.role,
@@ -73,7 +68,14 @@ export class SocketManager {
                     }
                 });
 
-                socket.on("client_disconnected", (data) => {
+                socket.on("UPDATE_DATA", (data) => {
+                    console.log("UPDATE_DATA", data);
+                    SocketManager.connectedUsers.forEach((user) => {
+                        user.emit("UPDATE_DATA", data);
+                    });
+                });
+
+                socket.on("client_disconne  cted", (data) => {
                     try {
                         if (!data || !data.token) {
                             console.error("Error: Datos de desconexión incompletos");
@@ -86,55 +88,30 @@ export class SocketManager {
                             return;
                         }
 
-                        this.removeUserFromMaps(socket.id, decoded.role);
+                        SocketManager.connectedUsers.delete(socket.id);
                         this.logConnectionStatus();
                     } catch (error) {
                         console.error("Error en client_disconnected:", error.message);
                     }
                 });
 
-                socket.on("new_notification", (data) => {
-                    SocketManager.connectedStudents.forEach((user) => {
-                        if (user.userId === data.id) {
-                            console.log("se encontro el usuario", user.userId);
-                            user.socket.emit("new_notification", data);
-                        }
-                    });
-                    console.log(data);
-                });
-
-                socket.on("mouse_move", (data) => {
-                    SocketManager.connectedUsers.forEach((user) => {
-                        if (socket.id !== user.socket.id) {
-                            user.socket.emit("mouse_move", data);
-                        }
-                    });
-                });
-
                 socket.on("disconnect", () => {
-                    console.log("Socket desconectado:", socket.id);
-                    const userInfo = SocketManager.connectedUsers.get(socket.id);
-                    if (userInfo) {
-                        this.removeUserFromMaps(socket.id, userInfo.role);
-                    }
+                    console.log("\x1b[31m%s\x1b[0m", "Socket desconectado:", socket.id);
+                    SocketManager.connectedUsers.delete(socket.id);
                     this.logConnectionStatus();
                 });
+
+                this.logConnectionStatus();
             });
         } catch (error) {
             console.error("Error en SocketManager:", error.message);
         }
     }
 
-    removeUserFromMaps(socketId, role) {
-        SocketManager.connectedUsers.delete(socketId);
-        if (role === "admin") {
-            SocketManager.connectedAdmins.delete(socketId);
-        } else if (role === "student") {
-            SocketManager.connectedStudents.delete(socketId);
-        }
-    }
-
     logConnectionStatus() {
-        console.log("Total de usuarios conectados:", SocketManager.connectedUsers.size);
+        console.log("\x1b[33m%s\x1b[0m", "Total de usuarios conectados:", SocketManager.connectedUsers.size);
+        console.log("\x1b[33m%s\x1b[0m", "Usuarios conectados:", Array.from(SocketManager.connectedUsers.entries()).map(([id, user]) => ({
+            socketId: id,
+        })));
     }
 }

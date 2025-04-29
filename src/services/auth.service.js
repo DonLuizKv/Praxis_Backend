@@ -119,19 +119,33 @@ export const register = async (credentials) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
+        let user_id; null
 
         if (role === 'admin') {
-            await pool.query(
+            const [result] = await pool.query(
                 "INSERT INTO admins (name, email, password, role) VALUES (?, ?, ?, ?)",
                 [name, email, hashedPassword, role]
             );
+
+            user_id = result.insertId;
         } else if (role === 'student') {
-            await pool.query(                "INSERT INTO students (name, document_id, email, password, role, scenary, state) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            const [result] = await pool.query(
+                "INSERT INTO students (name, document_id, email, password, role, scenary_id, state) VALUES (?, ?, ?, ?, ?, ?, ?)",
                 [name, document_id, email, hashedPassword, role, scenary, state]
             );
+
+            user_id = result.insertId;
         }
 
-        return { message: `Usuario ${role} registrado exitosamente` };
+        const payload = {
+            binnacles: [],
+            
+        }
+
+        return {
+            ...credentials,
+            id: user_id
+        };
     } catch (error) {
         throw new Error(error.message);
     }
@@ -192,7 +206,7 @@ export const verifySession = async (token) => {
             }
         }
 
-        return { role: decoded.role };
+        return { id: decoded.id, role: decoded.role };
     } catch (error) {
         if (error.name === 'JsonWebTokenError') {
             throw new Error('Token inválido');

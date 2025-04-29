@@ -98,3 +98,33 @@ export const updateAdmin = async (id, data) => {
         throw new Error(error.message);
     }
 }
+
+export const createScenary = async (id, data) => {
+    try {
+        const { name, address } = data;
+
+        if (!name || !address) {
+            throw new Error("Todos los campos son requeridos");
+        }
+
+        const query = "INSERT INTO scenary (name, address) VALUES (?, ?)";
+        const [result] = await pool.query(query, [name, address]);
+        return result;
+
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
+export const getScenarys = async () => {
+    try {
+        const query = "SELECT * FROM scenary";
+        const [result] = await pool.query(query);
+        return result;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
+
+

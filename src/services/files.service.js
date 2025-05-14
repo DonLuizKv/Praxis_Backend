@@ -22,19 +22,28 @@ export const getBinnacles = async () => {
 
 export const uploadDocument = async (data) => {
     try {
-        const { student_id, document_type, file_path } = data;
+        const { student_id, document_type, file_path, state } = data;
 
-        if (!student_id || !document_type || !file_path) {
+        if (!student_id || !document_type || !file_path || state === undefined) {
             throw new Error("Todos los campos son requeridos");
         }
+
+        console.log({
+            student_id,
+            document_type,
+            file_path,
+            state
+        });
+
+        const stateConverted = state ? 1 : 0;
 
         const [student] = await pool.query("SELECT * FROM students WHERE id = ?", [student_id]);
         if (student.length === 0) {
             throw new Error("Estudiante no encontrado");
         }
 
-        const query = "INSERT INTO documents (student_id, document_type, file_path) VALUES (?, ?, ?)";
-        const [result] = await pool.query(query, [student_id, document_type, file_path]);
+        const query = "INSERT INTO documents (student_id, document_type, file_path, stateDocument) VALUES (?, ?, ?, ?)";
+        const [result] = await pool.query(query, [student_id, document_type, file_path, stateConverted]);
         return result;
     } catch (error) {
         throw new Error(error.message);

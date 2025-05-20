@@ -1,14 +1,5 @@
-import { 
-    uploadDocument, 
-    uploadBinnacle, 
-    getDocuments, 
-    getBinnacles, 
-    getDocumentByStudentId, 
-    getBinnacleByStudentId, 
-    updateDocument, 
-    updateBinnacle,
-    deleteDocument,
-    deleteBinnacle
+import {
+    uploadDocument, uploadBinnacle, getDocuments, getBinnacles, getDocumentByStudentId, getBinnacleByStudentId, updateDocument, updateBinnacle, deleteDocument, deleteBinnacle
 } from "../services/files.service.js";
 
 export const GetDocuments = async (req, res) => {
@@ -33,8 +24,8 @@ export const GetBinnacles = async (req, res) => {
 
 export const UploadDocument = async (req, res) => {
     try {
-        await uploadDocument(req.body);
-        return res.status(201).json({ message: 'Documento subido con éxito'});
+        await uploadDocument(req.body, req.file);
+        return res.status(201).json({ message: 'Documento subido con éxito' });
     } catch (error) {
         console.error('Error al subir documento:', error);
         return res.status(400).json({ error: error.message });
@@ -44,7 +35,7 @@ export const UploadDocument = async (req, res) => {
 export const UploadBinnacle = async (req, res) => {
     try {
         await uploadBinnacle(req.body);
-        return res.status(201).json({ message: 'Bitácora subida con éxito'});
+        return res.status(201).json({ message: 'Bitácora subida con éxito' });
     } catch (error) {
         console.error('Error al subir bitácora:', error);
         return res.status(400).json({ error: error.message });
@@ -74,7 +65,7 @@ export const GetBinnacleByStudentId = async (req, res) => {
 export const UpdateDocument = async (req, res) => {
     try {
         await updateDocument(req.params.id, req.body);
-        return res.status(200).json({ message: 'Documento actualizado con éxito'});
+        return res.status(200).json({ message: 'Documento actualizado con éxito' });
     } catch (error) {
         console.error('Error al actualizar documento:', error);
         return res.status(400).json({ error: error.message });
@@ -84,7 +75,7 @@ export const UpdateDocument = async (req, res) => {
 export const UpdateBinnacle = async (req, res) => {
     try {
         await updateBinnacle(req.params.id, req.body);
-        return res.status(200).json({ message: 'Bitácora actualizada con éxito'});
+        return res.status(200).json({ message: 'Bitácora actualizada con éxito' });
     } catch (error) {
         console.error('Error al actualizar bitácora:', error);
         return res.status(400).json({ error: error.message });
@@ -94,7 +85,7 @@ export const UpdateBinnacle = async (req, res) => {
 export const DeleteDocument = async (req, res) => {
     try {
         await deleteDocument(req.params.id);
-        return res.status(200).json({ message: 'Documento eliminado con éxito'});
+        return res.status(200).json({ message: 'Documento eliminado con éxito' });
     } catch (error) {
         console.error('Error al eliminar documento:', error);
         return res.status(400).json({ error: error.message });
@@ -104,7 +95,7 @@ export const DeleteDocument = async (req, res) => {
 export const DeleteBinnacle = async (req, res) => {
     try {
         await deleteBinnacle(req.params.id);
-        return res.status(200).json({ message: 'Bitácora eliminada con éxito'});
+        return res.status(200).json({ message: 'Bitácora eliminada con éxito' });
     } catch (error) {
         console.error('Error al eliminar bitácora:', error);
         return res.status(400).json({ error: error.message });

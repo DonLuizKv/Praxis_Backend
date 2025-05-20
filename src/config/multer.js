@@ -1,32 +1,27 @@
 import multer from "multer";
 import path from "path";
 
-// Configuración de multer para manejar almacenamiento de archivos
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "uploads/"); // El directorio donde se guardan los archivos
-    },
+    destination:"../uploads",
     filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1E9); // Para evitar colisiones de nombres
-        cb(null, uniqueSuffix + path.extname(file.originalname)); // Genera el nombre del archivo
+        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
     },
 });
 
-// Filtro para asegurarse de que solo se acepten tipos específicos de archivos
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
+    const allowedTypes = ["application/pdf", "image/jpeg", "image/png", "image/jpg"];
     if (allowedTypes.includes(file.mimetype)) {
-        cb(null, true); // Acepta el archivo
+        cb(null, true);
     } else {
-        cb(new Error("Tipo de archivo no permitido"), false); // Rechaza el archivo
+        cb(new Error("Tipo de archivo no permitido"), false);
     }
 };
 
-// Configuración de multer
 const upload = multer({
     storage,
     fileFilter,
-    limits: { fileSize: 5 * 1024 * 1024 } // Limitar tamaño máximo a 5MB
+    limits: { fileSize: 5 * 1024 * 1024 }
 });
 
 export default upload;

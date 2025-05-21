@@ -33,6 +33,18 @@ const io = new Server(server, {
 const socketManager = SocketManager.getInstance(io);
 try {
     socketManager.start();
+    socketManager.sendNotification(socketManager.io, {
+        title: "Sube tu Bitacora",
+        description: "Te recordamos subir la bitacora de la semana.",
+        date: new Date().toISOString()
+    },{
+        seconds: "0",
+        minutes: "0",
+        hours: "9",
+        days: "*",
+        months: "*",
+        daysOfWeek: "5"
+    });
 } catch (error) {
     console.log(error);
 }

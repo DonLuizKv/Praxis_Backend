@@ -11,21 +11,7 @@ const createStudent = async (student) => {
 
 const getStudents = async () => {
     try {
-        const query = `
-            SELECT 
-                s.id AS student_id,
-                s.name AS student_name,
-                s.email,
-                s.document_id,
-                d.id AS document_id,
-                d.document_type,
-                d.file_path,
-                d.stateDocument,
-                d.created_at AS document_created_at,
-                d.updated_at AS document_updated_at
-            FROM students s
-            LEFT JOIN documents d ON s.id = d.student_id;
-        `;
+        const query = `SELECT * FROM students`;
         const [result] = await pool.query(query);
         return result;
     } catch (error) {

@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import cron from "node-cron";
 
 dotenv.config();
 
@@ -26,19 +27,19 @@ export class SocketManager {
             console.log("\x1b[33m%s\x1b[0m", "SocketManager iniciado");
             this.io.on("connection", (socket) => {
                 console.log("\x1b[32m%s\x1b[0m", "Nueva conexión de socket:", socket.id);
-                if(!SocketManager.connectedUsers.has(socket.id)) {
+                if (!SocketManager.connectedUsers.has(socket.id)) {
                     SocketManager.connectedUsers.set(socket.id, socket);
                 }
 
                 socket.on("client_connected", (data) => {
                     const { token } = data;
 
-                    if(!token) {
+                    if (!token) {
                         return;
                     }
-                    
+
                     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-                    if(!decoded) {
+                    if (!decoded) {
                         return;
                     }
 
@@ -49,14 +50,14 @@ export class SocketManager {
                         ...rest
                     }
 
-                    if(decoded.role === "admin") {
-                        if(!SocketManager.connectedAdmins.has(socket.id)) {
+                    if (decoded.role === "admin") {
+                        if (!SocketManager.connectedAdmins.has(socket.id)) {
                             SocketManager.connectedAdmins.set(socket.id, payload);
                         }
                     }
 
-                    if(decoded.role === "student") {
-                        if(!SocketManager.connectedStudents.has(socket.id)) {
+                    if (decoded.role === "student") {
+                        if (!SocketManager.connectedStudents.has(socket.id)) {
                             SocketManager.connectedStudents.set(socket.id, payload);
                         }
                     }
@@ -101,5 +102,12 @@ export class SocketManager {
         });
 
         console.log("\x1b[33m%s\x1b[0m", "Usuarios conectados:", PlayersRegistered);
+    }
+
+    sendNotification(socket, data, interval){
+        const finalInterval = `${interval.seconds} ${interval.minutes} ${interval.hours} ${interval.days} ${interval.months} ${interval.daysOfWeek}`;
+        cron.schedule(finalInterval, () => {
+            socket.emit("binnacle_notification", data);
+        });
     }
 }

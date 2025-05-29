@@ -1,21 +1,31 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
 import cron from "node-cron";
+import { Server, Socket } from "socket.io";
 
 dotenv.config();
 
+interface Interval {
+    seconds: string;
+    minutes: string;
+    hours: string;
+    days: string;
+    months: string;
+    daysOfWeek: string;
+}
+
 export class SocketManager {
-    static instance;
-    static io;
+    static instance: SocketManager;
+    static io: Server;
     static connectedUsers = new Map();
     static connectedAdmins = new Map();
     static connectedStudents = new Map();
 
-    constructor(io) {
-        this.io = io;
+    constructor(io: Server) {
+        SocketManager.io = io;
     }
 
-    static getInstance(io) {
+    static getInstance(io: Server) {
         if (!SocketManager.instance) {
             SocketManager.instance = new SocketManager(io);
         }
@@ -25,7 +35,7 @@ export class SocketManager {
     start() {
         try {
             console.log("\x1b[33m%s\x1b[0m", "SocketManager iniciado");
-            this.io.on("connection", (socket) => {
+            SocketManager.io.on("connection", (socket) => {
                 console.log("\x1b[32m%s\x1b[0m", "Nueva conexión de socket:", socket.id);
                 if (!SocketManager.connectedUsers.has(socket.id)) {
                     SocketManager.connectedUsers.set(socket.id, socket);
@@ -38,7 +48,7 @@ export class SocketManager {
                         return;
                     }
 
-                    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
                     if (!decoded) {
                         return;
                     }
@@ -83,7 +93,7 @@ export class SocketManager {
 
                 this.logConnectionStatus();
             });
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error en SocketManager:", error.message);
         }
     }
@@ -104,7 +114,7 @@ export class SocketManager {
         console.log("\x1b[33m%s\x1b[0m", "Usuarios conectados:", PlayersRegistered);
     }
 
-    sendNotification(socket, data, interval){
+    sendNotification(socket: Socket, data: any, interval: Interval) {
         const finalInterval = `${interval.seconds} ${interval.minutes} ${interval.hours} ${interval.days} ${interval.months} ${interval.daysOfWeek}`;
         cron.schedule(finalInterval, () => {
             socket.emit("binnacle_notification", data);

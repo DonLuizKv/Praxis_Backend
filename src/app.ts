@@ -5,20 +5,20 @@ import dotenv from "dotenv"
 import rateLimit from 'express-rate-limit';
 import http from "http";
 import { Server } from "socket.io";
-import { SocketManager } from "./lib/SocketManager.js";
+import { SocketManager } from "./lib/SocketManager";
 
 dotenv.config();
 
 // Environment Variables
-const PORT = process.env.PORT;
-const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS.split(',');
+const PORT = process.env.PORT || 4000;
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(',') || [];
 
 // Routes
-import adminRoutes from "./routes/admin.routes.js";
-import scenaryRoutes from "./routes/scenary.routes.js";
-import studentRoutes from "./routes/student.routes.js";
-import filesRoutes from "./routes/files.routes.js";
-import authRoutes from "./routes/auth.routes.js";
+import adminRoutes from "./routes/admin.routes";
+import scenaryRoutes from "./routes/scenary.routes";
+import studentRoutes from "./routes/student.routes";
+import filesRoutes from "./routes/files.routes";
+import authRoutes from "./routes/auth.routes";
 
 // Server
 const app = express();
@@ -33,26 +33,14 @@ const io = new Server(server, {
 const socketManager = SocketManager.getInstance(io);
 try {
     socketManager.start();
-    socketManager.sendNotification(socketManager.io, {
-        title: "Sube tu Bitacora",
-        description: "Te recordamos subir la bitacora de la semana.",
-        date: new Date().toISOString()
-    },{
-        seconds: "0",
-        minutes: "0",
-        hours: "9",
-        days: "*",
-        months: "*",
-        daysOfWeek: "5"
-    });
 } catch (error) {
     console.log(error);
 }
 
 // Rate Limit
 const limiter = rateLimit({
-    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 900000,
-    max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
+    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || "900000"),
+    max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || "100"),
     message: {
         error: 'Demasiadas peticiones desde esta IP, por favor intente nuevamente más tarde.'
     }
@@ -60,7 +48,7 @@ const limiter = rateLimit({
 
 // CORS
 const corsOptions = {
-    origin: function (origin, callback) {
+    origin: function (origin: any, callback: any) {
         if (!origin || ALLOWED_ORIGINS.includes(origin)) {
             callback(null, true);
         } else {

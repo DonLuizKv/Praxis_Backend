@@ -1,19 +1,24 @@
 import multer from "multer";
 import path from "path";
+import fs from "fs";
+
+const uploadPath = path.join(__dirname, '../uploads');
+
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true }); // crea carpetas si no existen
+}
 
 // Configuración del almacenamiento
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        cb(null, path.join(__dirname, "../uploads"));
     },
-    filename: (req, file, cb) => {
-        const studentId = req.body.student_id;
-        const tipo = req.body.tipo || 'documento';
+    filename: function (req, file, cb) {
         const ext = path.extname(file.originalname);
+        const safeName = file.originalname.replace(/\s+/g, '-').toLowerCase();
+        cb(null, `${Date.now()}-${safeName}`);
+    }
 
-        const customName = `${studentId}-${tipo}${ext}`;
-        cb(null, customName);
-    },
 });
 
 
@@ -32,7 +37,7 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCa
 const upload = multer({
     storage,
     fileFilter,
-    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+    limits: { fileSize: 500 * 1024 * 1024 }, // 500MB
 });
 
 export default upload;

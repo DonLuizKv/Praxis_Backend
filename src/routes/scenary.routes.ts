@@ -5,7 +5,6 @@ import { CreateScenary, GetScenarys, GetScenary, UpdateScenary, DeleteScenary } 
 const router = express.Router();
 
 router.use(verifyToken);
-router.use(isAdmin);
 
 router.post("/", CreateScenary);
 router.get("/", GetScenarys);

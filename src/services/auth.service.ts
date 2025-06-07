@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { comparePassword, hashPassword } from '../utilities/utils';
+import { comparePassword, hashPassword, normalizeStudent } from '../utilities/utils';
 import { User, Student } from '../utilities/Types';
 import { GetAdmin, GetStudent, GenerateStudent, GenerateAdmin } from '../models/auth.model';
 
@@ -127,13 +127,13 @@ export const register = async (credentials: User) => {
         await GenerateStudent(newUser as Student);
     }
 
-    // const normalizedStudent = await normalizeStudent(newUser as Student);
+    const normalizedStudent = await normalizeStudent(newUser as Student);
 
-    // // if (!normalizedStudent) {
-    // //     throw new Error('Error normalizing student');
-    // // }
+    if (!normalizedStudent) {
+        throw new Error('Error normalizing student');
+    }
 
-    // return normalizedStudent;
+    return normalizedStudent;
 };
 
 // export const createTestSession = async (userType: "admin" | "student") => {
@@ -166,7 +166,7 @@ export const verifySession = async (token: string) => {
         invalid: "Invalid token",
         role: "Invalid role",
         notFound: "User not found",
-    }
+    }    
 
     if (!token) {
         throw new Error(errors.token);
@@ -189,5 +189,8 @@ export const verifySession = async (token: string) => {
         throw new Error(errors.notFound);
     }
 
-    return { id: decoded.id, role: decoded.role };
+    return {
+        id: decoded.id,
+        role: decoded.role
+    };
 }; 

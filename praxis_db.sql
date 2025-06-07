@@ -60,7 +60,7 @@ CREATE TABLE documents (
   name VARCHAR(255) NOT NULL,
   student_id INT NOT NULL,
   document_type ENUM('arl','coverLetter') NOT NULL,
-  file_path VARCHAR(255) NOT NULL,
+  file_path TEXT NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
@@ -83,3 +83,7 @@ INSERT INTO admins (id, name, email, role, password, created_at, updated_at) VAL
 
 INSERT INTO students (id, name, identity_document, email, password, role, state, profile_photo, created_at, updated_at) VALUES
 (1, 'pick up', '123456789', 'juasjuas@a.com', '$2a$10$Z/9cy8B1jNZJaUR2ElqPAOTcRQVHiUlNPHDgbjOni5NjKIV3VuOOO', 'student', 1, '', '2025-04-27 22:23:28', '2025-04-27 22:23:28');
+
+INSERT INTO scenary (id, student_id, name, address) VALUES
+(1, 1, 'Gobernacion', 'Calle 123');
+

@@ -19,6 +19,7 @@ import scenaryRoutes from "./routes/scenary.routes";
 import studentRoutes from "./routes/student.routes";
 import filesRoutes from "./routes/files.routes";
 import authRoutes from "./routes/auth.routes";
+import path from "path";
 
 // Server
 const app = express();
@@ -72,6 +73,8 @@ app.use("/scenary", scenaryRoutes);
 app.use("/student", studentRoutes);
 app.use("/files", filesRoutes);
 app.use("/auth", authRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 // Welcome
 app.get("/", (req, res) => {

@@ -2,8 +2,8 @@ import { RowDataPacket } from "mysql2";
 import pool from "../utilities/Database";
 import { Binnacle, Document } from "../utilities/Types";
 
-export const CreateDocument = async (document: Document) => {
-    const query = "INSERT INTO documents (name, student_id, document_type, file_path) VALUES (?, ?, ?)";
+export const CreateDocument = async (document: Document) => {    
+    const query = "INSERT INTO documents (name, student_id, document_type, file_path) VALUES (?, ?, ?, ?)";
     const [response] = await pool.query(query, [document.name, document.student_id, document.document_type, document.file_path]);
     return response;
 }

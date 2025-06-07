@@ -6,11 +6,10 @@ import upload from "../middlewares/upload.middleware";
 const router = express.Router();
 
 router.use(verifyToken);
-router.use(upload.single('file'));
-// router.use(isAdmin);
++// router.use(isAdmin);
 
-router.post("/documents", upload.single(""), UploadDocument);
-router.post("/binnacles", upload.single(""), UploadBinnacle);
+router.post("/documents", upload.single("file"), UploadDocument);
+router.post("/binnacles", upload.single("file"), UploadBinnacle);
 
 router.get("/documents/:id", GetDocumentById);
 router.get("/binnacles/:id", GetBinnacleById);
@@ -18,8 +17,8 @@ router.get("/binnacles/:id", GetBinnacleById);
 router.get("/documents", GetAllDocuments);
 router.get("/binnacles", GetAllBinnacles);
 
-router.put("/documents/:id", upload.single(""), UpdateDocument);
-router.put("/binnacles/:id", upload.single(""), UpdateBinnacle);
+router.put("/documents/:id", upload.single("file"), UpdateDocument);
+router.put("/binnacles/:id", upload.single("file"), UpdateBinnacle);
 
 router.delete("/documents/:id", DeleteDocument);
 router.delete("/binnacles/:id", DeleteBinnacle);

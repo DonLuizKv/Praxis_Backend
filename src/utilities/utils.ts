@@ -4,23 +4,34 @@ import { Student, Document, Binnacle } from "./Types";
 import { Get as GetScenary } from '../models/scenary.model';
 
 export const normalizeStudent = async (student: Student) => {
-    const [documents] = await GetAllDocuments();
-    const [binnacles] = await GetAllBinnacles();
-    const [scenary] = await GetScenary(student.id as number);
+    const documents = await GetAllDocuments();
+    const binnacles = await GetAllBinnacles();
+    const scenary = await GetScenary(student.id as number);
+
+    const listDocuments = documents.filter(
+        (document) => document.student_id === student.id
+    );
+
+    const listBinnacles = binnacles.filter(
+        (binnacle) => binnacle.student_id === student.id
+    );
 
     return {
         id: student.id,
         name: student.name,
         identity_document: student.identity_document,
         email: student.email,
-        password: student.password,
         state: Boolean(student.state),
-        profile_photo: student.profile_photo || "",
-        scenary: scenary || "",
-        documents: documents || [],
-        binnacles: binnacles || []
+        profile_photo: student.profile_photo || "/",
+        scenary: scenary.find((scenary) => scenary.student_id === student.id),
+        documents: {
+            arl: listDocuments.find((doc) => doc.document_type === "arl") || null,
+            coverLetter: listDocuments.find((doc) => doc.document_type === "coverLetter") || null,
+        },
+        binnacles: listBinnacles || [],
     };
 };
+
 
 
 export const ErrorResponse = (error: unknown, clauses: string | string[], message: string) => {

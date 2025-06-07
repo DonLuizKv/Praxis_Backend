@@ -16,7 +16,12 @@ export const uploadDocument = async (document: Document) => {
         }
     }
 
-    const response = await CreateDocument(document);
+    const payload = {
+        ...document,
+        document_type: document.name as "arl" | "coverLetter"
+    }
+
+    const response = await CreateDocument(payload);
     return response;
 }
 
@@ -106,11 +111,7 @@ export const updateDocument = async (id: number, updatedDocument: Document) => {
         name: "This document already exists",
     }
 
-    const document = await verifyField("documents", "id", id);
-
-    if (!document) {
-        throw new Error("Document not found");
-    }
+    
 
     for (const key of Object.keys(errors)) {
         const values = updatedDocument[key as keyof Document];

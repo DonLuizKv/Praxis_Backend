@@ -4,9 +4,14 @@ import { deleteDocument, deleteBinnacle, getDocumentById, getBinnacleById, getDo
 
 export const UploadDocument = async (req: Request, res: Response): Promise<any> => {
     try {
-        await uploadDocument(req.body);
+        await uploadDocument({
+            ...req.body,
+            file_path: `uploads/${req.file?.filename}`
+        });
         return res.status(201).json({ message: "Document created successfully" });
     } catch (error: any) {
+        console.log(error);
+        
         const { statusCode, body } = ErrorResponse(error, "already exists", "Error to create document");
         return res.status(statusCode).json(body);
     }
@@ -64,7 +69,13 @@ export const GetAllBinnacles = async (req: Request, res: Response): Promise<any>
 
 export const UpdateDocument = async (req: Request, res: Response): Promise<any> => {
     try {
-        await updateDocument(Number(req.params.id), req.body);
+        await updateDocument(
+            Number(req.params.id), 
+            {
+                ...req.body,
+                file_path: `uploads/${req.file?.filename}`
+            }
+        );
         return res.status(200).json({ message: "Document updated successfully" });
     } catch (error: any) {
         const { statusCode, body } = ErrorResponse(error, ["not found", "already exists"], "Error to update document");

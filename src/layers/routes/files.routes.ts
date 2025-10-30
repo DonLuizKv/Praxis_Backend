@@ -1,7 +1,7 @@
 import express from "express";
-import { verifyToken, isAdmin } from "../middlewares/auth.middleware";
+import { verifyToken, isAdmin } from "../../middlewares/auth.middleware";
 import { DeleteBinnacle, DeleteDocument, GetBinnacleById, GetDocumentById, UpdateBinnacle, UpdateDocument, UploadBinnacle, UploadDocument, GetAllDocuments, GetAllBinnacles } from "../controllers/files.controller";
-import upload from "../middlewares/upload.middleware";
+import upload from "../../middlewares/upload.middleware";
 
 const router = express.Router();
 

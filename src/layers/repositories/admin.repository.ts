@@ -1,5 +1,5 @@
-import pool from "../utilities/Database";
-import { Admin } from "../utilities/Types.js";
+import pool from "../../utilities/Database";
+import { Admin } from "../../utilities/Types.js";
 import { RowDataPacket } from "mysql2";
 
 export const Create = async (admin: Admin) => {

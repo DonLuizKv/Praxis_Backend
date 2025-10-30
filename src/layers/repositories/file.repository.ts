@@ -1,6 +1,6 @@
 import { RowDataPacket } from "mysql2";
-import pool from "../utilities/Database";
-import { Binnacle, Document } from "../utilities/Types";
+import pool from "../../utilities/Database";
+import { Binnacle, Document } from "../../utilities/Types";
 
 export const CreateDocument = async (document: Document) => {    
     const query = "INSERT INTO documents (name, student_id, document_type, file_path) VALUES (?, ?, ?, ?)";

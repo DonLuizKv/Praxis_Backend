@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ErrorResponse } from "../utilities/utils";
+import { ErrorResponse } from "../../utilities/utils";
 import { deleteDocument, deleteBinnacle, getDocumentById, getBinnacleById, getDocuments, getBinnacles, updateDocument, updateBinnacle, uploadDocument, uploadBinnacle } from "../services/files.service";
 
 export const UploadDocument = async (req: Request, res: Response): Promise<any> => {

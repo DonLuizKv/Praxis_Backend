@@ -1,7 +1,7 @@
-import { Student } from "../utilities/Types";
-import { verifyField } from "../models/generic.model";
-import { Create, Delete, Get, GetAll, Update } from "../models/student.model";
-import { hashPassword, normalizeStudent } from "../utilities/utils";
+import { Student } from "../../utilities/Types";
+import { verifyField } from "../repositories/generic.model";
+import { Create, Delete, Get, GetAll, Update } from "../repositories/student.repository";
+import { hashPassword, normalizeStudent } from "../../utilities/utils";
 
 export const createStudent = async (student: Student) => {
     const errors = {

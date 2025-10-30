@@ -1,6 +1,6 @@
-import { CreateBinnacle, CreateDocument, DeleteBinnacle, DeleteDocument, GetAllBinnacles, GetAllDocuments, GetBinnacle, GetDocument, UpdateDocument } from "../models/file.model";
-import { verifyField } from "../models/generic.model";
-import { Binnacle, Document } from "../utilities/Types";
+import { CreateBinnacle, CreateDocument, DeleteBinnacle, DeleteDocument, GetAllBinnacles, GetAllDocuments, GetBinnacle, GetDocument, UpdateDocument } from "../repositories/file.repository";
+import { verifyField } from "../repositories/generic.model";
+import { Binnacle, Document } from "../../utilities/Types";
 
 //& POST - documents
 export const uploadDocument = async (document: Document) => {

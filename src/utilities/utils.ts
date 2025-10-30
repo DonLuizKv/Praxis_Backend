@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
-import { GetAllDocuments, GetAllBinnacles } from "../models/file.model";
+import { GetAllDocuments, GetAllBinnacles } from "../layers/repositories/file.repository";
 import { Student, Document, Binnacle } from "./Types";
-import { Get as GetScenary } from '../models/scenary.model';
+import { Get as GetScenary } from '../layers/repositories/scenary.repository';
 
 export const normalizeStudent = async (student: Student) => {
     const documents = await GetAllDocuments();
@@ -31,8 +31,6 @@ export const normalizeStudent = async (student: Student) => {
         binnacles: listBinnacles || [],
     };
 };
-
-
 
 export const ErrorResponse = (error: unknown, clauses: string | string[], message: string) => {
     const err = error as Error;

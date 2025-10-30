@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ErrorResponse } from "../utilities/utils";
+import { ErrorResponse } from "../../utilities/utils";
 import { createStudent, deleteStudent, getStudent, getStudents, updateStudent } from "../services/student.service";
 
 export const CreateStudent = async (req: Request, res: Response): Promise<any> => {

@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { comparePassword, hashPassword, normalizeStudent } from '../utilities/utils';
-import { User, Student } from '../utilities/Types';
-import { GetAdmin, GetStudent, GenerateStudent, GenerateAdmin } from '../models/auth.model';
+import { comparePassword, hashPassword, normalizeStudent } from '../../utilities/utils';
+import { User, Student } from '../../utilities/Types';
+import { GetAdmin, GetStudent, GenerateStudent, GenerateAdmin } from '../repositories/auth.repository';
 
 dotenv.config();
 
@@ -191,6 +191,8 @@ export const verifySession = async (token: string) => {
 
     return {
         id: decoded.id,
-        role: decoded.role
+        role: decoded.role,
+        email: decoded.email,
+        name: decoded.name
     };
 }; 

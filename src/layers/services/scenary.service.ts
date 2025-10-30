@@ -1,6 +1,6 @@
-import { Create, Delete, Get, GetAll, Update } from "../models/scenary.model";
-import { verifyField } from "../models/generic.model";
-import { Scenary } from "../utilities/Types";
+import { Create, Delete, Get, GetAll, Update } from "../repositories/scenary.repository";
+import { verifyField } from "../repositories/generic.model";
+import { Scenary } from "../../utilities/Types";
 
 //& CREATE
 export const createScenary = async (scenary: Scenary) => {

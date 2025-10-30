@@ -1,5 +1,5 @@
-import pool from "../utilities/Database";
-import { Scenary } from "../utilities/Types";
+import pool from "../../utilities/Database";
+import { Scenary } from "../../utilities/Types";
 import { RowDataPacket } from "mysql2";
 
 export const Create = async (scenary: Scenary) => {

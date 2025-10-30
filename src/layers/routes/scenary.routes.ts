@@ -1,5 +1,5 @@
 import express from "express";
-import { verifyToken, isAdmin } from "../middlewares/auth.middleware";
+import { verifyToken, isAdmin } from "../../middlewares/auth.middleware";
 import { CreateScenary, GetScenarys, GetScenary, UpdateScenary, DeleteScenary } from "../controllers/scenary.controller";
 
 const router = express.Router();

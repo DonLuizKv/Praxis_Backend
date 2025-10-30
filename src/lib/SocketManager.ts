@@ -76,10 +76,9 @@ export class SocketManager {
                     this.logConnectionStatus();
                 });
 
-                socket.on("UPDATE_DATA", (data) => {
-                    console.log("UPDATE_DATA", data);
+                socket.on("update_data", (data) => {
                     SocketManager.connectedUsers.forEach((user) => {
-                        user.emit("UPDATE_DATA", data);
+                        user.emit("update_data", data);
                     });
                 });
 

@@ -1,6 +1,6 @@
 import express from "express";
 import { CreateStudent, GetStudents, DeleteStudent, UpdateStudent, GetStudent } from "../controllers/student.controller";
-import { verifyToken } from "../middlewares/auth.middleware";
+import { verifyToken } from "../../middlewares/auth.middleware";
 
 const router = express.Router();
 

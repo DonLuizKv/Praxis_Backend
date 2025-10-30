@@ -1,6 +1,6 @@
-import pool from "../utilities/Database";
+import pool from "../../utilities/Database";
 import { RowDataPacket } from "mysql2";
-import { Student, User } from "../utilities/Types";
+import { Student, User } from "../../utilities/Types";
 
 export const GetAdmin = async (email: string) => {
     const query = "SELECT * FROM admins WHERE email = ?";

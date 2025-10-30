@@ -1,6 +1,6 @@
-import { Create, Delete, Get, GetAll, Update } from "../models/admin.model";
-import { verifyField } from "../models/generic.model";
-import { Admin } from "../utilities/Types";
+import { Create, Delete, Get, GetAll, Update } from "../repositories/admin.repository";
+import { verifyField } from "../repositories/generic.model";
+import { Admin } from "../../utilities/Types";
 
 //& POST
 export const createAdmin = async (admin: Admin) => {

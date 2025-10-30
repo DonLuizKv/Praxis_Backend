@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { createAdmin, getAdmins, getAdminById, updateAdmin, deleteAdmin } from "../services/admin.service";
-import { ErrorResponse } from "../utilities/utils";
+import { ErrorResponse } from "../../utilities/utils";
 
 export const CreateAdmin = async (req: Request, res: Response): Promise<any> => {
     try {

@@ -12,6 +12,7 @@ import studentRoutes from "./layers/routes/student.routes";
 import filesRoutes from "./layers/routes/files.routes";
 import authRoutes from "./layers/routes/auth.routes";
 import path from "path";
+import { Database } from "./utilities/Database";
 
 dotenv.config();
 
@@ -58,6 +59,9 @@ const corsOptions = {
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 };
+
+const setDatabase = Database.getInstance();
+setDatabase.initialize()
 
 // Middlewares
 app.use(cors(corsOptions));

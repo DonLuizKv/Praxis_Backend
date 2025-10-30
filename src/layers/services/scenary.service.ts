@@ -1,6 +1,8 @@
-import { Create, Delete, Get, GetAll, Update } from "../repositories/scenary.repository";
 import { verifyField } from "../repositories/generic.model";
 import { Scenary } from "../../utilities/Types";
+import { ScenaryRepository } from "../repositories/scenary.repository";
+
+const ScenaryRepo = new ScenaryRepository();
 
 //& CREATE
 export const createScenary = async (scenary: Scenary) => {
@@ -17,7 +19,7 @@ export const createScenary = async (scenary: Scenary) => {
         }
     }
 
-    const result = await Create(scenary);
+    const result = await ScenaryRepo.Insert(scenary);
     return result;
 };
 
@@ -27,7 +29,7 @@ export const getScenarys = async () => {
         notFound: "Scenarys not found",
     }
 
-    const scenarys = await GetAll();
+    const scenarys = await ScenaryRepo.FindAll();
 
     if (scenarys.length === 0) {
         throw new Error(errors.notFound);
@@ -42,9 +44,9 @@ export const getScenary = async (id: number) => {
         notFound: "Scenary not found",
     }
 
-    const scenary = await Get(id);
+    const scenary = await ScenaryRepo.Find(id);
 
-    if (scenary.length === 0) {
+    if (scenary == null) {
         throw new Error(errors.notFound);
     }
 
@@ -60,8 +62,8 @@ export const updateScenary = async (id: number, updatedScenary: Scenary) => {
 
     if (!updatedScenary) throw new Error("At least one field must be updated");
 
-    const scenary = await Get(id);
-    if (scenary.length === 0) throw new Error(errors.notFound);
+    const scenary = await ScenaryRepo.Find(id);
+    if (scenary == null) throw new Error(errors.notFound);
 
     for (const field of Object.keys(errors)) {
         const value = updatedScenary[field as keyof Scenary];
@@ -69,7 +71,7 @@ export const updateScenary = async (id: number, updatedScenary: Scenary) => {
         if (existInDB) throw new Error(errors[field as keyof typeof errors]);
     }
     
-    const result = await Update(id, updatedScenary);
+    const result = await ScenaryRepo.Update(id, updatedScenary);
     return result;  
 };
 
@@ -79,13 +81,13 @@ export const deleteScenary = async (id: number) => {
         notFound: "Scenary not found",
     }
 
-    const scenary = await Get(id);
+    const scenary = await ScenaryRepo.Find(id);
 
-    if (scenary.length === 0) {
+    if (scenary == null) {
         throw new Error(errors.notFound);
     }
 
-    const result = await Delete(id);
+    const result = await ScenaryRepo.Delete(id);
     return result;
 };
 

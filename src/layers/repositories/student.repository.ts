@@ -1,23 +1,23 @@
-import pool from "../../utilities/Database";
+import { Database } from "../../utilities/Database";
 import { Student } from "../../utilities/Types";
-import { RowDataPacket } from "mysql2";
+
+const connection = Database.getInstance();
 
 export const Create = async (student: Student) => {
     const query = `INSERT INTO students (name, email, identity_document, password, profile_photo) VALUES (?, ?, ?, ?, ?)`;
-    const [response] = await pool.query(query, [student.name, student.email, student.identity_document, student.password, student.profile_photo]);
-    return response;
+    await connection.query(query, [student.name, student.email, student.identity_document, student.password, student.profile_photo]);
 };
 
 export const GetAll = async () => {
     const query = `SELECT * FROM students`;
-    const [result] = await pool.query<RowDataPacket[]>(query);
-    return result;
+    const { rows } = await connection.query(query);
+    return rows;
 }
 
 export const Get = async (id: number) => {
     const query = `SELECT * FROM students WHERE id = ?`;
-    const [result] = await pool.query<RowDataPacket[]>(query, [id]);
-    return result;
+    const { rows } = await connection.query(query, [id]);
+    return rows[0];
 }
 
 export const Update = async (id: number, student: Student) => {
@@ -25,20 +25,19 @@ export const Update = async (id: number, student: Student) => {
     const values = Object.values(student);
 
     const query = `UPDATE students SET ${fields} WHERE id = ?`;
-    const [response] = await pool.query(query, [...values, id]);
-    return response;
+    await connection.query(query, [...values, id]);
 }
 
 export const Delete = async (id: number) => {
     const query = `DELETE FROM students WHERE id = ?`;
-    const [response] = await pool.query(query, [id]);
-    return response;
+    const { rowCount } = await connection.query(query, [id]);
+    return (rowCount ?? 0) > 0;
 }
 
 // const uploadDocument = async (document) => {
 //     try {
 //         const query = `INSERT INTO documents SET ?`;
-//         const [result] = await pool.query(query, [document]);
+//         const [result] = await connection.query(query, [document]);
 //         return result;
 //     } catch (error) {
 //         throw new Error('Error al subir el documento: ' + error.message);
@@ -48,7 +47,7 @@ export const Delete = async (id: number) => {
 // const uploadBinnacle = async (binnacle) => {
 //     try {
 //         const query = `INSERT INTO binnacles SET ?`;
-//         const [result] = await pool.query(query, [binnacle]);
+//         const [result] = await connection.query(query, [binnacle]);
 //         return result;
 //     } catch (error) {
 //         throw new Error('Error al subir el binnacle: ' + error.message);

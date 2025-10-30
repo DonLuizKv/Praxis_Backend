@@ -1,19 +1,21 @@
 import bcrypt from 'bcryptjs';
 import { GetAllDocuments, GetAllBinnacles } from "../layers/repositories/file.repository";
 import { Student, Document, Binnacle } from "./Types";
-import { Get as GetScenary } from '../layers/repositories/scenary.repository';
+import { ScenaryRepository } from '../layers/repositories/scenary.repository';
+
+const ScenaryRepo = new ScenaryRepository();
 
 export const normalizeStudent = async (student: Student) => {
     const documents = await GetAllDocuments();
     const binnacles = await GetAllBinnacles();
-    const scenary = await GetScenary(student.id as number);
+    const scenary = await ScenaryRepo.Find(student.id as number);
 
     const listDocuments = documents.filter(
-        (document) => document.student_id === student.id
+        (document: Document) => document.student_id === student.id
     );
 
     const listBinnacles = binnacles.filter(
-        (binnacle) => binnacle.student_id === student.id
+        (binnacle: Binnacle) => binnacle.student_id === student.id
     );
 
     return {
@@ -23,10 +25,10 @@ export const normalizeStudent = async (student: Student) => {
         email: student.email,
         state: Boolean(student.state),
         profile_photo: student.profile_photo || "/",
-        scenary: scenary.find((scenary) => scenary.student_id === student.id),
+        scenary: scenary?.student_id === student.id,
         documents: {
-            arl: listDocuments.find((doc) => doc.document_type === "arl") || null,
-            coverLetter: listDocuments.find((doc) => doc.document_type === "coverLetter") || null,
+            arl: listDocuments.find((doc:Document) => doc.document_type === "arl") || null,
+            coverLetter: listDocuments.find((doc:Document) => doc.document_type === "coverLetter") || null,
         },
         binnacles: listBinnacles || [],
     };

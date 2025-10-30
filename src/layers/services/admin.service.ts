@@ -1,6 +1,8 @@
-import { Create, Delete, Get, GetAll, Update } from "../repositories/admin.repository";
 import { verifyField } from "../repositories/generic.model";
 import { Admin } from "../../utilities/Types";
+import { AdminRepository } from "../repositories/admin.repository";
+
+const AdminRepo = new AdminRepository();
 
 //& POST
 export const createAdmin = async (admin: Admin) => {
@@ -17,8 +19,7 @@ export const createAdmin = async (admin: Admin) => {
         }
     }
 
-    const result = await Create(admin);
-    return result;
+    await AdminRepo.Insert(admin);
 }
 
 //$ GET
@@ -27,9 +28,9 @@ export const getAdmins = async () => {
         notFound: "Admins not found",
     }
 
-    const admins = await GetAll();
+    const admins = await AdminRepo.FindAll();
 
-    if (admins.length === 0) {
+    if (admins) {
         throw new Error(errors.notFound);
     }
 
@@ -42,9 +43,9 @@ export const getAdminById = async (id: number) => {
         notFound: "Admin not found",
     }
 
-    const admin = await Get(id);
+    const admin = await AdminRepo.Find(id);
 
-    if (admin.length === 0) {
+    if (admin) {
         throw new Error(errors.notFound);
     }
 
@@ -57,13 +58,13 @@ export const deleteAdmin = async (id: number) => {
         notFound: "Admin not found",
     }
 
-    const admin = await Get(id);
+    const admin = await AdminRepo.Find(id);
 
-    if (admin.length === 0) {
+    if (admin) {
         throw new Error(errors.notFound);
     }
 
-    const result = await Delete(id);
+    const result = await AdminRepo.Delete(id);
     return result;
 }
 
@@ -75,9 +76,9 @@ export const updateAdmin = async (id: number, updatedAdmin: Admin) => {
         name: "This name is already in use",
     }
 
-    const admin = await Get(id);
+    const admin = await AdminRepo.Find(id);
 
-    if (admin.length === 0) {
+    if (admin) {
         throw new Error(errors.notFound);
     }
 
@@ -89,7 +90,7 @@ export const updateAdmin = async (id: number, updatedAdmin: Admin) => {
         }
     }
 
-    const result = await Update(id, updatedAdmin);
+    const result = await AdminRepo.Update(id, updatedAdmin);
     return result;
 }
 

@@ -1,9 +1,10 @@
-import pool from "../../utilities/Database";
-import { RowDataPacket } from "mysql2";
+import { Database } from "../../utilities/Database";
+
+const connection = Database.getInstance()
 
 export const verifyField = async (table: string, field: string, value: any) => {
-    const query = `SELECT * FROM ${table} WHERE ${field} = ?`;
-    const [result] = await pool.query<RowDataPacket[]>(query, [value]);
-    return result.length > 0;
+    const query = `SELECT * FROM ${table} WHERE ${field} = $1`;
+    const { rowCount } = await connection.query(query, [value]);
+    return (rowCount ?? 0) > 0;
 }
 

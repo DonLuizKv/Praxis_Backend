@@ -57,7 +57,7 @@ export const getStudents = async () => {
     }
 
     const normalizedStudents = await Promise.all(
-        students.map((student) =>
+        students.map((student: Student) =>
             normalizeStudent(student as Student)
         )
     );

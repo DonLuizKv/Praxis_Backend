@@ -1,34 +1,32 @@
-import pool from "../../utilities/Database";
-import { RowDataPacket } from "mysql2";
+import { Database } from "../../utilities/Database";
 import { Student, User } from "../../utilities/Types";
 
+const connection = Database.getInstance()
+
 export const GetAdmin = async (email: string) => {
-    const query = "SELECT * FROM admins WHERE email = ?";
-    const [admin] = await pool.query<RowDataPacket[]>(query, [email]);
-    return admin;
+    const query = "SELECT * FROM admins WHERE email = $1";
+    const { rows } = await connection.query(query, [email]);
+    return rows[0];
 }
 
 export const GetStudent = async (email: string) => {
-    const query = "SELECT * FROM students WHERE email = ?";
-    const [student] = await pool.query<RowDataPacket[]>(query, [email]);
-    return student;
+    const query = "SELECT * FROM students WHERE email = $1";
+    const { rows } = await connection.query(query, [email]);
+    return rows[0];
 }
 
 export const GenerateStudent = async (student: Student) => {
     const query = "INSERT INTO students (name, email, password, identity_document, profile_photo) VALUES (?, ?, ?, ?, ?)";
-    const [result] = await pool.query<RowDataPacket[]>(query, [
+    await connection.query(query, [
         student.name,
         student.email,
         student.password,
         student.identity_document,
         student.profile_photo
     ]);
-    return result;
 }
 
 export const GenerateAdmin = async (admin: User) => {
     const query = "INSERT INTO admins (name, email, password, role) VALUES (?, ?, ?, ?)";
-    const [result] = await pool.query<RowDataPacket[]>(query, [admin.name, admin.email, admin.password, admin.role]);
-    return result;
+    await connection.query(query, [admin.name, admin.email, admin.password, admin.role]);
 }
-

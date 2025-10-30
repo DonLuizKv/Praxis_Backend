@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { login, register, verifySession } from '../services/auth.service';
 import { ErrorResponse } from '../../utilities/utils';
 
-
 export const Login = async (req: Request, res: Response): Promise<any> => {
     try {
         const auth = await login(req.body);
